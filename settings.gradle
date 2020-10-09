@@ -1,3 +1,4 @@
+include ':libnetwork'
 include ':libcommon'
 include ':libnavcompiler'
 include ':libnavannotation'

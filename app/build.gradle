@@ -39,6 +39,7 @@ dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
 
     implementation project(':libnavannotation')
+    implementation project(':libnetwork')
     kapt project(":libnavcompiler")
     implementation project(':libcommon')
 }
