@@ -1,12 +1,15 @@
 package com.mooc.libnetwork.request
 
+import android.annotation.SuppressLint
 import android.text.TextUtils
 import android.util.Log
 import androidx.annotation.IntDef
+import androidx.arch.core.executor.ArchTaskExecutor
 import com.mooc.libnetwork.ApiResponse
 import com.mooc.libnetwork.ApiService
 import com.mooc.libnetwork.JsonCallback
-// import com.mooc.libnetwork.cache.CacheManager
+import com.mooc.libnetwork.R
+import com.mooc.libnetwork.cache.CacheManager
 import com.mooc.libnetwork.utils.UrlCreator
 import okhttp3.Call
 import okhttp3.Callback
@@ -17,13 +20,13 @@ import java.lang.Exception
 import java.lang.reflect.ParameterizedType
 import java.lang.reflect.Type
 
-abstract class Request<T, R : Request<T, R>>(protected val mUrl: String) {
+abstract class Request<T, R : Request<T, R>>(protected val mUrl: String) : Cloneable {
 
     protected val headers = HashMap<String, String>()
     protected val params = HashMap<String, Any>()
     private var mCacheKey: String? = null
     private var mType: Type? = null
-    private var mCacheStrategy: Int = 0
+    private var mCacheStrategy: Int = NET_ONLY
 
     companion object {
         // 仅仅使用缓存,即使缓存不存在
@@ -41,6 +44,7 @@ abstract class Request<T, R : Request<T, R>>(protected val mUrl: String) {
 
 
     @IntDef(value = [CACHE_ONLY, CACHE_FIRST, NET_ONLY, NET_CACHE])
+    @Retention(AnnotationRetention.SOURCE)
     annotation class CacheStrategy
 
     // 使用者添加headers
@@ -77,34 +81,70 @@ abstract class Request<T, R : Request<T, R>>(protected val mUrl: String) {
         return this as R
     }
 
-    // 使用者发起请求
+    // 使用者发起异步请求
+    @SuppressLint("RestrictedApi")
     fun execute(callback: JsonCallback<T>) {
-
-        getCall().enqueue(object : Callback {
-
-            // 本地网络发生了异常
-            override fun onFailure(call: Call, e: IOException) {
-                val response = ApiResponse<T>()
-                response.message = e.message
-                callback.onError(response)
+        // 如果需要缓存
+        if (mCacheStrategy != NET_ONLY) {
+            ArchTaskExecutor.getIOThreadExecutor().execute {
+                val response = readCache()
+                callback.onCacheSuccess(response)
             }
+        }
 
-            // 服务器端响应
-            override fun onResponse(call: Call, response: Response) {
-                // 解析响应结果
-                val apiResponse: ApiResponse<T> = parseResponse(response, callback)
+        // 如果需要网络
+        if (mCacheStrategy != CACHE_ONLY) {
+            getCall().enqueue(object : Callback {
 
-                // 即使服务器响应成功,也还要判断响应的内容结果是否成功
-                if (!apiResponse.success) {
-                    callback.onError(apiResponse)
-                } else {
-                    callback.onSuccess(apiResponse)
+                // 本地网络发生了异常
+                override fun onFailure(call: Call, e: IOException) {
+                    val response = ApiResponse<T>()
+                    response.message = e.message
+                    callback.onError(response)
                 }
-            }
-        })
+
+                // 服务器端响应
+                override fun onResponse(call: Call, response: Response) {
+                    // 解析响应结果
+                    val apiResponse: ApiResponse<T> = parseResponse(response, callback)
+
+                    // 即使服务器响应成功,也还要判断响应的内容结果是否成功
+                    if (!apiResponse.success) {
+                        callback.onError(apiResponse)
+                    } else {
+                        callback.onSuccess(apiResponse)
+                    }
+                }
+            })
+        }
     }
 
+    private fun readCache(): ApiResponse<T> {
+        val apiResponse = ApiResponse<T>()
+
+        val key = if (TextUtils.isEmpty(mCacheKey)) {
+            generateCacheKey()
+        } else {
+            mCacheKey as String
+        }
+
+        val cache = CacheManager.getCache<T>(mCacheKey!!)
+
+        apiResponse.status = 304
+        apiResponse.message = "缓存获取成功"
+        apiResponse.body = cache
+        apiResponse.success = true
+
+        return apiResponse
+    }
+
+    // 发起同步请求
     fun execute(): ApiResponse<T>? {
+        // 只允许缓存
+        if (mCacheStrategy == CACHE_ONLY) {
+            return readCache()
+        }
+
         try {
             val response = getCall().execute()
             return parseResponse(response, null)
@@ -129,17 +169,21 @@ abstract class Request<T, R : Request<T, R>>(protected val mUrl: String) {
 
             // 如果200
             if (isSuccess) {
-                if (callback != null) {
-                    // 获取泛型父类
-                    val type = callback.javaClass.genericSuperclass as ParameterizedType
-                    // 获取泛型类型
-                    val argument = type.actualTypeArguments[0]
-                    // 将文本内容进行转换为对象
-                    result.body = converter.convert(content, argument) as T
-                } else if (mType != null) {
-                    result.body = converter.convert(content, mType!!) as T
-                } else {
-                    Log.e("Request", "parseResponse: 未传入callback或者type为空")
+                when {
+                    callback != null -> {
+                        // 获取泛型父类
+                        val type = callback.javaClass.genericSuperclass as ParameterizedType
+                        // 获取泛型类型
+                        val argument = type.actualTypeArguments[0]
+                        // 将文本内容进行转换为对象
+                        result.body = converter.convert(content, argument) as T
+                    }
+                    mType != null -> {
+                        result.body = converter.convert(content, mType!!) as T
+                    }
+                    else -> {
+                        Log.e("Request", "parseResponse: 未传入callback或者type为空")
+                    }
                 }
             } else {
                 // 如果404
@@ -175,7 +219,7 @@ abstract class Request<T, R : Request<T, R>>(protected val mUrl: String) {
             } else {
                 mCacheKey!!
             }
-        // CacheManager.save(key,body)
+        CacheManager.save(key, body)
     }
 
     private fun generateCacheKey(): String {
