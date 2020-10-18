@@ -25,6 +25,8 @@
       <option name="LINE_COMMENT_ADD_SPACE" value="true" />
     </codeStyleSettings>
     <codeStyleSettings language="XML">
+      <option name="LINE_COMMENT_AT_FIRST_COLUMN" value="false" />
+      <option name="BLOCK_COMMENT_AT_FIRST_COLUMN" value="false" />
       <indentOptions>
         <option name="CONTINUATION_INDENT_SIZE" value="4" />
       </indentOptions>

@@ -8,7 +8,6 @@ import androidx.arch.core.executor.ArchTaskExecutor
 import com.mooc.libnetwork.ApiResponse
 import com.mooc.libnetwork.ApiService
 import com.mooc.libnetwork.JsonCallback
-import com.mooc.libnetwork.R
 import com.mooc.libnetwork.cache.CacheManager
 import com.mooc.libnetwork.utils.UrlCreator
 import okhttp3.Call
@@ -16,9 +15,10 @@ import okhttp3.Callback
 import okhttp3.Response
 import java.io.IOException
 import java.io.Serializable
-import java.lang.Exception
+import java.lang.reflect.Field
 import java.lang.reflect.ParameterizedType
 import java.lang.reflect.Type
+
 
 abstract class Request<T, R : Request<T, R>>(protected val mUrl: String) : Cloneable {
 
@@ -54,12 +54,21 @@ abstract class Request<T, R : Request<T, R>>(protected val mUrl: String) : Clone
     }
 
     // 使用者添加请求参数
-    fun addParam(key: String, value: Any): R {
-        val field = value.javaClass.getField("TYPE")
-        val clazz = field.get(null) as Class<*>
-        if (clazz.isPrimitive) {
-            params[key] = value
+    fun addParam(key: String, value: Any?): R {
+        if (value == null) {
+            return this as R
         }
+
+        if (value.javaClass == String::class.java) {
+            params[key] = value
+        } else {
+            val field: Field = value.javaClass.getField("TYPE")
+            val clazz = field.get(null) as Class<*>
+            if (clazz.isPrimitive) {
+                params[key] = value
+            }
+        }
+
         return this as R
     }
 
@@ -145,8 +154,10 @@ abstract class Request<T, R : Request<T, R>>(protected val mUrl: String) : Clone
             return readCache()
         }
 
+        // 只允许网络
         try {
             val response = getCall().execute()
+
             return parseResponse(response, null)
         } catch (e: Exception) {
             e.printStackTrace()
@@ -179,7 +190,9 @@ abstract class Request<T, R : Request<T, R>>(protected val mUrl: String) : Clone
                         result.body = converter.convert(content, argument) as T
                     }
                     mType != null -> {
+                        Log.d("TAG", "parseResponse: 进入了分支")
                         result.body = converter.convert(content, mType!!) as T
+                        Log.d("TAG", "parseResponse: 转换成功")
                     }
                     else -> {
                         Log.e("Request", "parseResponse: 未传入callback或者type为空")
@@ -190,6 +203,7 @@ abstract class Request<T, R : Request<T, R>>(protected val mUrl: String) : Clone
                 message = content
             }
         } catch (e: Exception) {
+            e.printStackTrace()
             message = e.message
             isSuccess = false
         }
@@ -243,5 +257,9 @@ abstract class Request<T, R : Request<T, R>>(protected val mUrl: String) : Clone
         headers.forEach {
             builder.addHeader(it.key, it.value)
         }
+    }
+
+    public override fun clone(): Request<T, R> {
+        return super.clone() as Request<T, R>
     }
 }

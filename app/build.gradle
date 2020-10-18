@@ -33,13 +33,28 @@ android {
     packagingOptions {
         exclude 'META-INF/proguard/coroutines.pro'
     }
+
+    dataBinding {
+        enabled = true
+    }
 }
 
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
 
+    implementation files('lib/open_sdk_r0bd7cf8_lite.jar')
+
     implementation project(':libnavannotation')
     implementation project(':libnetwork')
+    implementation 'androidx.appcompat:appcompat:1.2.0'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.2'
     kapt project(":libnavcompiler")
     implementation project(':libcommon')
+
+    implementation("androidx.legacy:legacy-support-core-utils:1.0.0")
+    implementation("androidx.lifecycle:lifecycle-common:2.3.0-beta01")
+    implementation("androidx.documentfile:documentfile:1.0.1")
+    implementation("androidx.localbroadcastmanager:localbroadcastmanager:1.0.0")
+    implementation("androidx.print:print:1.0.0")
 }

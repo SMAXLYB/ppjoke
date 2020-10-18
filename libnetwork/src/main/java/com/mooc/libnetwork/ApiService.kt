@@ -2,6 +2,8 @@ package com.mooc.libnetwork
 
 import com.mooc.libnetwork.converter.Converter
 import com.mooc.libnetwork.converter.JsonConverter
+import com.mooc.libnetwork.request.GetRequest
+import com.mooc.libnetwork.request.PostRequest
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import java.security.SecureRandom
@@ -41,8 +43,12 @@ object ApiService {
     object OkHttpHolder {
 
         // 打印网络请求日志
-        private val interceptor: HttpLoggingInterceptor = HttpLoggingInterceptor()
-            .setLevel(HttpLoggingInterceptor.Level.BODY)
+        private val interceptor: HttpLoggingInterceptor = run {
+            val httpLoggingInterceptor = HttpLoggingInterceptor()
+            httpLoggingInterceptor.apply {
+                httpLoggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
+            }
+        }
 
         val OK_HTTP_CLIENT = OkHttpClient.Builder()
             .readTimeout(5, TimeUnit.SECONDS)
@@ -57,5 +63,13 @@ object ApiService {
         converter?.let {
             sConverter = converter
         }
+    }
+
+    fun <T> get(url: String): GetRequest<T> {
+        return GetRequest<T>(sBaseUrl + url)
+    }
+
+    fun <T> post(url: String): PostRequest<T> {
+        return PostRequest<T>(sBaseUrl + url)
     }
 }

@@ -12,6 +12,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationItemView
 import com.google.android.material.bottomnavigation.BottomNavigationMenuView
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.bottomnavigation.LabelVisibilityMode
+import com.mooc.libcommon.dp
 import com.mooc.ppjoke.R
 import com.mooc.ppjoke.utils.AppConfig
 
@@ -119,11 +120,3 @@ class AppBottomBar : BottomNavigationView {
         return destination?.id ?: -1
     }
 }
-
-// 获取以dp转为px的值
-val Float.dp
-   get() = TypedValue.applyDimension(
-       TypedValue.COMPLEX_UNIT_DIP,
-       this,
-       Resources.getSystem().displayMetrics
-   )

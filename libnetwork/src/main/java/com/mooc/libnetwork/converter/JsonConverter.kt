@@ -1,5 +1,6 @@
 package com.mooc.libnetwork.converter
 
+import android.util.Log
 import com.alibaba.fastjson.JSON
 import java.lang.reflect.Type
 
@@ -13,6 +14,7 @@ class JsonConverter : Converter<Any> {
                 return JSON.parseObject<Any>(it.toString(), type)
             }
         }
+        Log.d("TAG", "convert: 失败")
         return null
     }
 

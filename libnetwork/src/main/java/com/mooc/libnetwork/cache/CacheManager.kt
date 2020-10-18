@@ -1,5 +1,6 @@
 package com.mooc.libnetwork.cache
 
+import android.util.Log
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.ObjectInputStream
@@ -15,7 +16,7 @@ class CacheManager {
 
         fun <T> getCache(key: String): T? {
             val cache = CacheDatabase.instance.getDao().getCache(key)
-            if (cache.data != null) {
+            if (cache?.data != null) {
                 return toObject<T>(cache.data)
             }
             return null

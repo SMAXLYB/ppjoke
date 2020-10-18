@@ -3,4 +3,8 @@
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
+    <string name="author_avator">author_avator</string>
+    <string name="feed_comment">评论</string>
+    <string name="like">赞</string>
+    <string name="share">分享</string>
 </resources>

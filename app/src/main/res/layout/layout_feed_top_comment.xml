@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="comment"
+            type="com.mooc.ppjoke.model.Comment" />
+
+        <import type="android.text.TextUtils" />
+
+        <import type="android.view.View" />
+
+        <import type="com.mooc.ppjoke.ui.home.StringConverter" />
+    </data>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:background="@color/color_gray2"
+        android:orientation="vertical"
+        android:paddingLeft="@dimen/dp_10"
+        android:paddingRight="@dimen/dp_10"
+        android:paddingBottom="@dimen/dp_10"
+        android:visibility="@{comment == null ? View.GONE:View.VISIBLE}">
+
+        <!--神评icon-->
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_60"
+            android:layout_gravity="right|top"
+            android:layout_marginRight="@dimen/dp_10"
+            android:src="@drawable/icon_god_comment2"
+            tools:ignore="RtlHardcoded" />
+
+        <!--上下布局-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!--神评信息-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_20"
+                android:layout_marginTop="@dimen/dp_10"
+                android:orientation="horizontal">
+
+                <!--头像-->
+                <ImageView
+                    android:id="@+id/avatar"
+                    android:layout_width="@dimen/dp_20"
+                    android:layout_height="@dimen/dp_20"
+                    app:image_url="@{comment.author.avatar}"
+                    app:isCircle="@{true}"
+                    tools:src="@mipmap/ic_launcher" />
+
+                <!--作者名称-->
+                <TextView
+                    android:id="@+id/user_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/dp_20"
+
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="@dimen/dp_10"
+                    android:gravity="center_vertical"
+                    android:text="@{comment.author.name}"
+                    android:textColor="@color/color_3d3"
+                    android:textSize="@dimen/sp_12"
+                    tools:text="这是作者名称" />
+
+                <!--占位-->
+                <Space
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="1" />
+
+                <!--点赞数-->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    android:text="@{comment.ugc.likeCount>0?StringConverter.convertFeedUgc(comment.ugc.likeCount):null}"
+                    android:textColor="@{comment.ugc.hasLiked?@color/color_theme:@color/color_3d3}"
+                    android:textSize="@dimen/sp_12"
+                    tools:text="1000" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dp_2"
+                    android:padding="2dp"
+                    android:src="@{comment.ugc.hasLiked?@drawable/icon_cell_liked:@drawable/icon_cell_like}"
+                    tools:src="@drawable/icon_cell_liked" />
+            </LinearLayout>
+
+            <!--神评内容-->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_10"
+                android:layout_marginRight="@dimen/dp_36"
+                android:ellipsize="end"
+                android:maxLines="2"
+                android:text="@{comment.commentText}"
+                android:textColor="@color/color_3d3"
+                android:textSize="@dimen/sp_14"
+                android:visibility="@{TextUtils.isEmpty(comment.commentText)?View.GONE:View.VISIBLE}"
+                tools:text="这是神评内容" />
+
+            <!--神评视频或图文-->
+            <FrameLayout
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_marginTop="@dimen/dp_10"
+                android:visibility="@{TextUtils.isEmpty(comment.imageUrl)?View.GONE:View.VISIBLE}">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:background="@color/color_theme_10"
+                    android:visibility="@{TextUtils.isEmpty(comment.imageUrl)?View.GONE:View.VISIBLE}"
+                    app:image_url="@{comment.imageUrl}"
+                    app:isCircle="@{false}"
+                    tools:src="@mipmap/ic_launcher" />
+
+                <ImageView
+                    android:layout_width="@dimen/dp_20"
+                    android:layout_height="@dimen/dp_20"
+                    android:layout_gravity="center"
+                    android:src="@drawable/icon_video_play"
+                    android:visibility="@{comment.commentType==2?View.VISIBLE:View.GONE}" />
+            </FrameLayout>
+        </LinearLayout>
+    </FrameLayout>
+</layout>
