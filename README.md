@@ -1,2 +1,2 @@
 # ppjoke
-仿皮皮虾社app
+图片分享社交app
