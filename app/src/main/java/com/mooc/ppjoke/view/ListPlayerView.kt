@@ -4,20 +4,16 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.Gravity
 import android.view.LayoutInflater
-import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageView
-import android.widget.ProgressBar
 import com.mooc.libcommon.PixUtils
 import com.mooc.ppjoke.R
 import com.mooc.ppjoke.ui.home.ImageViewAdapter
 import com.mooc.ppjoke.ui.home.setBlurImageUrl
 
 class ListPlayerView : FrameLayout {
-    private lateinit var bufferView: ProgressBar
     private lateinit var cover: ImageView
     private lateinit var blur: ImageView
-    private lateinit var play: ImageView
     private lateinit var mCategory: String
     private lateinit var mVideoUrl: String
 
@@ -29,28 +25,24 @@ class ListPlayerView : FrameLayout {
         defStyleAttr
     ) {
         LayoutInflater.from(context).inflate(R.layout.layout_player_view, this, true)
-        bufferView = findViewById<ProgressBar>(R.id.buffer_view)
         cover = findViewById<ImageView>(R.id.cover)
         blur = findViewById<ImageView>(R.id.blur_background)
-        play = findViewById<ImageView>(R.id.play)
     }
 
     /**
      * @param category 生命标志
-     * @param widthPx 视频宽度
-     * @param heightPx 视频高度
+     * @param widthPx 宽度
+     * @param heightPx 高度
      * @param coverUrl 封面地址
-     * @param videoUrl 视频地址
+     * @param videoUrl 地址
      */
     fun bindData(
         category: String,
         widthPx: Int,
         heightPx: Int,
-        coverUrl: String,
-        videoUrl: String
+        coverUrl: String
     ) {
         mCategory = category
-        mVideoUrl = videoUrl
 
         // 加载封面
         ImageViewAdapter.setImageUrlAndShape(cover, coverUrl, false)
@@ -116,9 +108,5 @@ class ListPlayerView : FrameLayout {
         coverParams.height = coverHeight
         coverParams.gravity = Gravity.CENTER
         cover.layoutParams = coverParams
-
-        val playParams = play.layoutParams as LayoutParams
-        playParams.gravity = Gravity.CENTER
-        play.layoutParams = playParams
     }
 }

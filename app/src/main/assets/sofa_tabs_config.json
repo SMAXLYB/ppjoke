@@ -1,0 +1,22 @@
+{
+  "activeSize": 16,
+  "normalSize": 14,
+  "activeColor": "#ED7282",
+  "normalColor": "#666666",
+  "select": 0,
+  "tabGravity": 0,
+  "tabs": [
+    {
+      "title": "类别1",
+      "index": 0,
+      "tag": "pics",
+      "enable": true
+    },
+    {
+      "title": "类别2",
+      "index": 1,
+      "tag": "text",
+      "enable": true
+    }
+  ]
+}

@@ -8,6 +8,11 @@
         <item name="materialButtonStyle">@style/materialButton</item>
     </style>
 
+    <style name="launcher" parent="AppTheme">
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowBackground">@drawable/splash</item>
+    </style>
+
     <style name="materialButton" parent="Widget.MaterialComponents.Button">
         <item name="android:paddingLeft">8dp</item>
         <item name="android:paddingRight">8dp</item>

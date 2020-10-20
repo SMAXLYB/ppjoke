@@ -11,16 +11,9 @@
       "title": "首页"
     },
     {
-      "size": 24,
-      "enable": true,
-      "index": 1,
-      "pageUrl": "main/tabs/sofa",
-      "title": "沙发"
-    },
-    {
       "size": 40,
       "enable": true,
-      "index": 2,
+      "index": 1,
       "tintColor": "#ff678f",
       "pageUrl": "main/tabs/publish",
       "title": ""
@@ -28,16 +21,9 @@
     {
       "size": 24,
       "enable": true,
-      "index": 3,
-      "pageUrl": "main/tabs/find",
+      "index": 2,
+      "pageUrl": "main/tabs/sofa",
       "title": "发现"
-    },
-    {
-      "size": 24,
-      "enable": true,
-      "index": 4,
-      "pageUrl": "main/tabs/my",
-      "title": "我的"
     }
   ]
 }

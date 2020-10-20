@@ -52,14 +52,11 @@ dependencies {
     api 'com.scwang.smart:refresh-header-classics:2.0.1'
     api 'com.scwang.smart:refresh-footer-classics:2.0.1'
 
-    // 播放器
-    implementation 'com.google.android.exoplayer:exoplayer-core:2.12.0'
-    implementation 'com.google.android.exoplayer:exoplayer-dash:2.12.0'
-    implementation 'com.google.android.exoplayer:exoplayer-ui:2.12.0'
-
     // ViewModel liveData
     api 'androidx.lifecycle:lifecycle-extensions:2.2.0'
 
     // paging
     api 'androidx.paging:paging-runtime-ktx:2.1.2'
+
+    api 'androidx.work:work-runtime:2.4.0'
 }

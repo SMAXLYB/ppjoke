@@ -9,7 +9,6 @@ import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.mooc.libcommon.PixUtils
-import com.mooc.ppjoke.databinding.LayoutFeedInteractionBinding
 import com.mooc.ppjoke.databinding.LayoutFeedTypeImageBinding
 import com.mooc.ppjoke.databinding.LayoutFeedTypeVideoBinding
 import com.mooc.ppjoke.model.Feed
@@ -70,7 +69,7 @@ class FeedAdapter(val context: Context, val category: String) :
             } else {
                 mBinding as LayoutFeedTypeVideoBinding
                 mBinding.feed = feed
-                mBinding.listPlayerView.bindData(category,feed.width,feed.height,feed.cover,feed.url)
+                mBinding.listPlayerView.bindData(category,feed.width,feed.height,feed.cover)
             }
         }
     }

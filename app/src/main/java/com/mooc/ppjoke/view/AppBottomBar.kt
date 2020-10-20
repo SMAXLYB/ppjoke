@@ -1,7 +1,5 @@
 package com.mooc.ppjoke.view
 
-import android.content.res.Resources
-import android.util.TypedValue
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.ColorStateList
@@ -21,10 +19,9 @@ class AppBottomBar : BottomNavigationView {
     companion object {
         private val sIcons = intArrayOf(
             R.drawable.icon_tab_home,
-            R.drawable.icon_tab_sofa,
             R.drawable.icon_tab_publish,
-            R.drawable.icon_tab_find,
-            R.drawable.icon_tab_mine
+            R.drawable.icon_tab_sofa
+
         )
     }
 

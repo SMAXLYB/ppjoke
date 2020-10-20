@@ -1,20 +1,12 @@
 package com.mooc.ppjoke.ui.home
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import android.widget.Adapter
-import android.widget.TextView
-import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.observe
 import androidx.paging.ItemKeyedDataSource
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.mooc.libnavannotation.FragmentDestination
-import com.mooc.ppjoke.R
 import com.mooc.ppjoke.model.Feed
 import com.mooc.ppjoke.ui.AbsListFragment
 import com.mooc.ppjoke.ui.MutableDataSource
@@ -22,6 +14,17 @@ import com.scwang.smart.refresh.layout.api.RefreshLayout
 
 @FragmentDestination(pageUrl = "main/tabs/home", asStarter = true)
 class HomeFragment : AbsListFragment<Feed, HomeViewModel>() {
+
+
+    companion object {
+        fun newInstance(feedType: String): HomeFragment {
+            val args = Bundle()
+            args.putString("feedType", feedType)
+            val fragment = HomeFragment()
+            fragment.arguments = args
+            return fragment
+        }
+    }
 
     override fun getAdapter(): PagedListAdapter<Feed, out RecyclerView.ViewHolder> {
         val feedType = if (arguments != null) {

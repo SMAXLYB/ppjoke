@@ -5,18 +5,31 @@ import com.alibaba.fastjson.TypeReference
 import com.mooc.libcommon.AppGlobals
 import com.mooc.ppjoke.model.BottomBar
 import com.mooc.ppjoke.model.Destination
+import com.mooc.ppjoke.model.SofaTab
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStream
 import java.io.InputStreamReader
-import java.lang.Exception
-import java.lang.StringBuilder
+import java.util.*
+
 
 class AppConfig {
     companion object {
 
         private var sDestConfig: HashMap<String, Destination>? = null
         private var sBottomBar: BottomBar? = null
+        private var sSofaTab: SofaTab? = null
+        private var sFindTabConfig: SofaTab? = null
+
+        @JvmStatic
+        fun getSofaTabConfig(): SofaTab {
+            if (sSofaTab == null) {
+                val content = parseFile("sofa_tabs_config.json")
+                sSofaTab = JSON.parseObject(content, SofaTab::class.java)
+                sSofaTab!!.tabs.sortWith(Comparator { o1, o2 -> if (o1.index < o2.index) -1 else 1 })
+            }
+            return sSofaTab as SofaTab
+        }
 
         @JvmStatic
         fun getDestConfig(): HashMap<String, Destination> {
